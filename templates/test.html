@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>Test</title>
+</head>
+
+<body>
+  <div id="container">
+    <h1>The XMLHttpRequest Object</h1>
+    <button type="button" onclick="loadDoc()">Change Content</button>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script>
+    $.fn.image = function(src, f) {
+      return this.each(function() {
+        var i = new Image();
+        i.src = src;
+        i.onload = f;
+        this.appendChild(i);
+      });
+    }
+    $("#container").image("{{ url_for('static', filename = 'screenshot.png') }}", function() {
+      alert("The image is loaded now");
+    });
+  </script>
+</body>
+
+</html>
