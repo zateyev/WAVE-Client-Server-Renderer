@@ -8,12 +8,8 @@ class Dwave(object):
     def run(self):
         lib.Dwave_start(self.obj)
 
-    # def set_quat(self, x, y, z, angle):
-    #     lib.Dwave_set_quat(self.obj, x, y, z, angle)
+    def set_cam_settings(self, px, py, pz, ux, uy, uz):
+        lib.Dwave_set_cam_settings(self.obj, px, py, pz, ux, uy, uz)
 
-    def set_quat(self, px, py, pz, ux, uy, uz):
-        lib.Dwave_set_quat(self.obj, px, py, pz, ux, uy, uz)
-
-# f = Dwave()
-# f.set_quat(c_float(0.41003194468231546), c_float(0.14182406485987478), c_float(-0.90097710235425), c_float(0.00390625))
-# f.run()
+    def set_scene_size(self, width, height):
+        lib.Dwave_set_scene_size(self.obj, width, height)

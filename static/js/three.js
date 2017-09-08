@@ -1,0 +1,1 @@
+/home/zhassulan/three.js/build/three.js

@@ -181,8 +181,6 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 				angle *= _this.rotateSpeed;
 				quaternion.setFromAxisAngle( axis, angle );
-				console.log("axis: " + axis.toArray() + "  angle: " + angle);
-				console.log("quaternion: " + quaternion.toArray());
 
 				_eye.applyQuaternion( quaternion );
 				_this.object.up.applyQuaternion( quaternion );

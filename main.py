@@ -7,14 +7,18 @@ from flask import Flask, render_template, session, request
 from flask_socketio import SocketIO, emit, join_room, leave_room, \
     close_room, rooms, disconnect
 from models.dwave import Dwave
-from ctypes import c_float
+from ctypes import c_float, c_int
 from random import randint
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
 # the best option based on installed packages.
 async_mode = None
+
 f = Dwave()
+
+# dw = threading.Thread(target = f.run)
+# dw.start()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -35,7 +39,7 @@ thread = None
 
 @app.route('/')
 def index():
-    return render_template('index0.html', async_mode=socketio.async_mode)
+    return render_template('index.html', async_mode=socketio.async_mode)
 
 
 @socketio.on('my_event', namespace='/test')
@@ -47,42 +51,38 @@ def test_message(message):
 
 @socketio.on('my_broadcast_event')
 def test_broadcast_message(json):
-    # x = json['data']['x']
-    # y = json['data']['y']
-    # z = json['data']['z']
-    # angle = json['data']['angle']
     px = json['data']['position']['x']
     py = json['data']['position']['y']
     pz = json['data']['position']['z']
     ux = json['data']['up']['x']
     uy = json['data']['up']['y']
     uz = json['data']['up']['z']
-    # f.set_quat(c_float(x), c_float(y), c_float(z), c_float(angle))
-    f.set_quat(c_float(px), c_float(py), c_float(pz), c_float(ux), c_float(uy), c_float(uz))
-    print(json['data']['position']['x'])
-    # f.run()
-    dw = threading.Thread(target = f.run)
-    dw.start()
-    dw.join()
-    # try:
-    #     thread.start_new_thread(f.run(), ())
-    # except:
-    #     print("Error: unable to start DWAVE")
 
-    # img = ImageGrab.grab()
-    # img.save('static/screenshot.png','png')
+    width = json['data']['size']['width']
+    height = json['data']['size']['height']
+    print(json['data']['position']['x'])
+
+    # ds = threading.Thread(target = f.set_cam_settings,
+    #                   args = (c_float(px), c_float(py), c_float(pz),
+    #                           c_float(ux), c_float(uy), c_float(uz)))
+    # ds.start()
+    # ds.join()
+
+    f.set_cam_settings(c_float(px), c_float(py), c_float(pz), c_float(ux), c_float(uy), c_float(uz))
+    f.set_scene_size(c_int(int(round(width))), c_int(int(round(height))))
+
+    f.run()
+
+    # dw = threading.Thread(target = f.run)
+    # dw.start()
+    # dw.join()
+
+    uid = json['data']['uid']
 
     session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('my_response',
+    emit('my_response' + str(uid),
          {'data': str(json), 'id': randint(0, 1000)},
          broadcast=True)
-
-# @socketio.on('my_broadcast_event')
-# def test_broadcast_message(json):
-#     session['receive_count'] = session.get('receive_count', 0) + 1
-#     emit('my_response',
-#          {'data': str(json), 'count': session['receive_count']},
-#          broadcast=True)
 
 
 @socketio.on('disconnect_request', namespace='/test')

@@ -2,6 +2,7 @@ $("#message").draggable();
 $("#orientation").draggable();
 $("#settings").draggable();
 
+prev_cam_pos = {};
 
 function setMessage(bheader, bcontent) {
     //console.log("Creating message");
@@ -23,6 +24,17 @@ function setMessage(bheader, bcontent) {
     console.log(html);
     $(".bar-message > .bar-wrapper").append(html);
     $('.bar-message > .bar-wrapper').scrollTop($('.bar-message > .bar-wrapper')[0].scrollHeight);
+}
+
+function areEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length != b.length) return false;
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
 }
 
 $(".bar-dropdown").click(function() {
@@ -167,10 +179,10 @@ $('#viewVolren :checkbox').click(function() {
 $('#rotateLight :checkbox').click(function() {
     var $this = $(this);
     if ($this.is(':checked')) {
-        rcl2.startLightRotation();
+        // rcl2.startLightRotation();
     } else {
         console.log("Not Checked");
-        rcl2.stopLightRotation();
+        // rcl2.stopLightRotation();
     }
 });
 
@@ -231,7 +243,19 @@ $("#textUpperZ").change(function() {
 
 $( document ).ready(function() {
 
+    var uid = Math.round(Math.random()*100);
+
     namespace = '';
+
+    var width = window.innerWidth
+        || document.documentElement.clientWidth
+        || document.body.clientWidth;
+
+    var height = window.innerHeight
+        || document.documentElement.clientHeight
+        || document.body.clientHeight;
+
+    var im_pad = (height - 800) / 2;
 
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
@@ -241,25 +265,57 @@ $( document ).ready(function() {
       });
     });
 
-    socket.on('my_response', function(msg) {
-        // $('#container-2').append('<br>' + $('<div/>').text('Quaternion #' + msg.count + ': ' + msg.data).html());
-        $("#imageBox").html('<img src="static/img/scrshot.png?id=' + msg.id + '" />');
+    socket.on('my_response' + uid, function(msg) {
+
+      // $("#imageBox").css('padding', im_pad + 'px 0');
+      $("#imageBox").css('text-align', 'center');
+      $("#imageBox").css('margin-left', '15px');
+      $("#imageBox").html('<img src="static/img/scrshot.png?id=' + msg.id + '" />');
+
+      $('#container-2').css('z-index', '1');
     });
 
     $('#container').mouseup(function() {
-      // var quaternion_arr = rcl2._core._controls.getRotationParams();
+      console.log("width " + width);
       var camera_position = rcl2._core._camera.position.toArray();
       var camera_up = rcl2._core._camera.up.toArray();
-      var camera = {"position": {"x": camera_position[0], "y": camera_position[1], "z": camera_position[2]},
-                    "up": {"x": camera_up[0], "y": camera_up[1], "z": camera_up[2]}};
-      // var quaternion = {"angle": quaternion_arr[3], "x": quaternion_arr[0], "y": quaternion_arr[1], "z": quaternion_arr[2]};
-      // console.log("mouseup from container " + quaternion_arr);
-      console.log("mouseup from container " + camera.position.x);
-      socket.emit('my_broadcast_event', {
-        data: camera
-      });
+      var params = {"position": {"x": camera_position[0], "y": camera_position[1], "z": camera_position[2]},
+                    "up": {"x": camera_up[0], "y": camera_up[1], "z": camera_up[2]},
+                    "size": {"width": width, "height": height},
+                    "uid": uid};
+
+      console.log("UID: " + uid);
+
+      // socket.emit('my_broadcast_event', {
+      //   data: params
+      // });
+
+      if (areEqual(camera_position, prev_cam_pos)) {
+        $('#container-2').css('z-index', '1');
+      } else {
+        prev_cam_pos = camera_position;
+        socket.emit('my_broadcast_event', {
+          data: params
+        });
+      }
     });
 
+    $('#wave-container').mousedown(function() {
+      console.log("canvas mousedown");
+      $('#container-2').css('z-index', '-1');
+      // $('#container').css('z-index', '1');
+    });
+
+    $('#wave-container').bind('mousewheel', function(e){
+        if(e.originalEvent.wheelDelta /120 > 0) {
+            console.log('scrolling up !');
+            $('#container-2').css('z-index', '-1');
+        }
+        else{
+            console.log('scrolling down !');
+            $('#container-2').css('z-index', '-1');
+        }
+    });
 
     setMessage("GUI", "Initialized.");
     setMessage("GUI", "After 5 seconds of idling, raycaster and light rotation will stop.");
@@ -321,7 +377,3 @@ $( document ).ready(function() {
         }
     });
 });
-
-// $("#container").mouseup(function() {
-//   console.log("lastlast" + rcl2._core._controls.getRotationParams());
-// });

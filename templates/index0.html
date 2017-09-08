@@ -255,13 +255,50 @@
         "{{ url_for('static', filename = 'dataset/amber/slicemap_5.png') }}",
         "{{ url_for('static', filename = 'dataset/amber/slicemap_6.png') }}",
         "{{ url_for('static', filename = 'dataset/amber/slicemap_7.png') }}",
+
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x256/slicemap_0.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x256/slicemap_1.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x256/slicemap_2.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x256/slicemap_3.png') }}"
+
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x512/slicemap_0.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x512/slicemap_1.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x512/slicemap_2.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x512/slicemap_3.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x512/slicemap_4.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x512/slicemap_5.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x512/slicemap_6.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/256x256x512/slicemap_7.png') }}"
+        //
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x256/slicemap_0.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x256/slicemap_1.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x256/slicemap_2.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x256/slicemap_3.png') }}"
+        //
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x512/slicemap_0.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x512/slicemap_1.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x512/slicemap_2.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x512/slicemap_3.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x512/slicemap_4.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x512/slicemap_5.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x512/slicemap_6.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/512x512x512/slicemap_7.png') }}"
+
+        // "{{ url_for('static', filename = 'dataset/eucrib/slicemap_0.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/slicemap_1.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/slicemap_2.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/slicemap_3.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/slicemap_4.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/slicemap_5.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/slicemap_6.png') }}",
+        // "{{ url_for('static', filename = 'dataset/eucrib/slicemap_7.png') }}",
       ],
       "steps": 256,
       "shader_name": "secondPassSoebel",
-      "slices_range": [0, 448],
+      "slices_range": [0, '*'],
       "row_col": [8, 8],
       "renderer_size": [1024, 1024],
-      "renderer_canvas_size": [952.5, '*'],
+      "renderer_canvas_size": [952.5, '*'], // 952.5
       "opacity_factor": 40,
       "color_factor": 0.4,
       "l": 5,
