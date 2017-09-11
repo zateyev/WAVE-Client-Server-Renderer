@@ -255,7 +255,10 @@ $( document ).ready(function() {
         || document.documentElement.clientHeight
         || document.body.clientHeight;
 
-    var im_pad = (height - 800) / 2;
+    // var im_pad = 0;
+    // if (height > width) {
+    //   im_pad = (height - width) / 2;
+    // }
 
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
@@ -267,9 +270,14 @@ $( document ).ready(function() {
 
     socket.on('my_response' + uid, function(msg) {
 
-      // $("#imageBox").css('padding', im_pad + 'px 0');
+      if (height > width) {
+        var im_pad = (height - width) / 2;
+        $("#imageBox").css('padding', im_pad + 'px 0');
+      } else {
+        $("#imageBox").css('margin-left', '15px');
+      }
+
       $("#imageBox").css('text-align', 'center');
-      $("#imageBox").css('margin-left', '15px');
       $("#imageBox").html('<img src="static/img/scrshot.png?id=' + msg.id + '" />');
 
       $('#container-2').css('z-index', '1');
