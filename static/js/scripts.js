@@ -300,6 +300,36 @@ $( document ).ready(function() {
       }
     });
 
+    $('#container').on({'touchstart': function() {
+      console.log("canvas mousedown");
+      $('#container-2').css('z-index', '-1');
+    }});
+
+    $('#container').on({'touchend touchcancel': function() {
+      console.log("width " + width);
+      var camera_position = rcl2._core._camera.position.toArray();
+      var camera_up = rcl2._core._camera.up.toArray();
+      var params = {"position": {"x": camera_position[0], "y": camera_position[1], "z": camera_position[2]},
+                    "up": {"x": camera_up[0], "y": camera_up[1], "z": camera_up[2]},
+                    "size": {"width": width, "height": height},
+                    "uid": uid};
+
+      console.log("UID: " + uid);
+
+      // socket.emit('my_broadcast_event', {
+      //   data: params
+      // });
+
+      if (areEqual(camera_position, prev_cam_pos)) {
+        $('#container-2').css('z-index', '1');
+      } else {
+        prev_cam_pos = camera_position;
+        socket.emit('my_broadcast_event', {
+          data: params
+        });
+      }
+    }});
+
     $('#wave-container').mousedown(function() {
       console.log("canvas mousedown");
       $('#container-2').css('z-index', '-1');

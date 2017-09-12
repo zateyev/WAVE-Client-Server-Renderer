@@ -23,7 +23,7 @@
     <div id="imageBox"></div>
     <!-- <div id="imageBox" style="padding: 122.5px 0; text-align: center;"></div> -->
   </div>
-  <div class="window-item window-unitem" id="message">
+  <!-- <div class="window-item window-unitem" id="message">
     <div class="bar-header">
       <div class="bar-title noselect">Message Log</div>
 
@@ -134,11 +134,10 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
-  <div id="window-tab">
+  <!-- <div id="window-tab">
     <div id="offMessage" class="noselect bar-pil">Message Log</div>
-    <!--<div id="offOrientation" class="noselect bar-pil">Orientation</div>-->
     <div id="offSettings" class="noselect bar-pil">Settings</div>
   </div>
 
@@ -146,9 +145,8 @@
     <div class="bar-header">
       <div id="toggleGUI" class="bar-button noselect">Show/Hide GUI</div>
       <div id="showTabs" class="bar-button noselect">Windows</div>
-      <!--<div id="testTrigger" class="bar-button noselect">Test Trigger</div>-->
     </div>
-  </div>
+  </div> -->
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
@@ -159,49 +157,7 @@
   <!-- <script src="{{ url_for('static', filename = 'js/three.min.js') }}"></script> -->
   <script src="{{ url_for('static', filename = 'js/three.js') }}"></script>
   <script src="{{ url_for('static', filename = 'js/OrbitControls.js') }}"></script>
-  <script>
-    // Global variable
-    var img = null,
-      needle = null,
-      ctx = null;
-
-    function clearCanvas() {
-      // clear canvas
-      ctx.clearRect(0, 0, 200, 200);
-    }
-
-    function compassDraw(degrees) {
-      //console.log("Draw degree");
-      //console.log(degrees);
-
-      clearCanvas();
-
-      // Draw the compass onto the canvas
-      ctx.drawImage(img, 0, 0);
-
-      // Save the current drawing state
-      ctx.save();
-
-      // Now move across and down half the
-      ctx.translate(100, 100);
-
-      // Rotate around this point
-      ctx.rotate(degrees * (Math.PI / 180));
-
-      // Draw the image back and up
-      ctx.drawImage(needle, -100, -100);
-
-      // Restore the previous drawing state
-      ctx.restore();
-    }
-
-    function imgLoaded() {
-      compassDraw(myvalue);
-    }
-
-    var myvalue = 0;
-    // init();
-  </script>
+  
   <script src="{{ url_for('static', filename = 'js/TrackballControls.js') }}"></script>
   <script src="{{ url_for('static', filename = 'js/ejs.js') }}"></script>
   <script src="{{ url_for('static', filename = 'js/volumeRaycaster.js') }}"></script>
@@ -211,7 +167,7 @@
   <script>
     config = {
       "dom_container": "container",
-      "isWebgl2": true,
+      // "isWebgl2": true,
       "datasets_paths": [
         "{{ url_for('static', filename = 'dataset/wasp.raw') }}"
       ],
@@ -230,20 +186,22 @@
         // "{{ url_for('static', filename = 'dataset/eucrib/512x512x512/slicemap_6.png') }}",
         // "{{ url_for('static', filename = 'dataset/eucrib/512x512x512/slicemap_7.png') }}"
 
-        "{{ url_for('static', filename = 'dataset/amber/slicemap_0.png') }}",
-        "{{ url_for('static', filename = 'dataset/amber/slicemap_1.png') }}",
-        "{{ url_for('static', filename = 'dataset/amber/slicemap_2.png') }}",
-        "{{ url_for('static', filename = 'dataset/amber/slicemap_3.png') }}",
-        "{{ url_for('static', filename = 'dataset/amber/slicemap_4.png') }}",
-        "{{ url_for('static', filename = 'dataset/amber/slicemap_5.png') }}",
-        "{{ url_for('static', filename = 'dataset/amber/slicemap_6.png') }}",
-        "{{ url_for('static', filename = 'dataset/amber/slicemap_7.png') }}",
+        // "{{ url_for('static', filename = 'dataset/amber/slicemap_0.png') }}",
+        // "{{ url_for('static', filename = 'dataset/amber/slicemap_1.png') }}",
+        // "{{ url_for('static', filename = 'dataset/amber/slicemap_2.png') }}",
+        // "{{ url_for('static', filename = 'dataset/amber/slicemap_3.png') }}",
+        // "{{ url_for('static', filename = 'dataset/amber/slicemap_4.png') }}",
+        // "{{ url_for('static', filename = 'dataset/amber/slicemap_5.png') }}",
+        // "{{ url_for('static', filename = 'dataset/amber/slicemap_6.png') }}",
+        // "{{ url_for('static', filename = 'dataset/amber/slicemap_7.png') }}",
+
+        "{{ url_for('static', filename = 'dataset/eucrib256.png') }}"
       ],
       "steps": 256,
-      "shader_name": "secondPassSoebel",
-      // "shader_name": "secondPassDVR",
+      // "shader_name": "secondPassSoebel",
+      "shader_name": "secondPassDVR",
       "slices_range": [0, '*'],
-      "row_col": [8, 8],
+      "row_col": [16, 16],
       "renderer_size": [1024, 1024],
       "renderer_canvas_size": ['fullscreen', 'fullscreen'],
       "opacity_factor": 40,
