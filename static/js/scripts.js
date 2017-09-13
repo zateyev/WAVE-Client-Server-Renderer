@@ -2,7 +2,9 @@ $("#message").draggable();
 $("#orientation").draggable();
 $("#settings").draggable();
 
-prev_cam_pos = {};
+var prev_cam_pos = {};
+var query_img;
+var down = false;
 
 function setMessage(bheader, bcontent) {
     //console.log("Creating message");
@@ -243,7 +245,8 @@ $("#textUpperZ").change(function() {
 
 $( document ).ready(function() {
 
-    var uid = Math.round(Math.random()*100);
+    // var uid = Math.round(Math.random()*100);
+    var uid = 0;
 
     namespace = '';
 
@@ -255,88 +258,76 @@ $( document ).ready(function() {
         || document.documentElement.clientHeight
         || document.body.clientHeight;
 
-    var im_pad = (height - 800) / 2;
-
     var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port + namespace);
 
     socket.on('connect', function() {
-      socket.emit('my_event', {
-        data: 'I\'m connected!'
+      socket.emit('first_connection', {
+        data: 'Socket connection established!'
       });
     });
 
-    socket.on('my_response' + uid, function(msg) {
-
-      // $("#imageBox").css('padding', im_pad + 'px 0');
-      $("#imageBox").css('text-align', 'center');
-      $("#imageBox").css('margin-left', '15px');
-      $("#imageBox").html('<img src="static/img/scrshot.png?id=' + msg.id + '" />');
-
-      $('#container-2').css('z-index', '1');
+    socket.on('server_response', function(msg) {
+      console.log(msg.data);
     });
 
-    $('#container').mouseup(function() {
+    socket.on('receive_img' + uid, function(msg) {
+      if (!down) {
+        // if (height > width) {
+        //   var im_pad = (height - width) / 2;
+        //   $("#imageBox").css('padding', '' + im_pad + 'px 0');
+        // } else {
+        //   $("#imageBox").css('margin-left', '15px');
+        // }
+
+        $("#imageBox").css('text-align', 'center');
+
+        // var camera_position = rcl2._core._camera.position.toArray();
+        // if (msg.data == camera_position[0]) {
+        //   console.log('PPPPP ' + msg.data + ' === ' + camera_position[0]);
+        // }
+
+        $("#imageBox").html('<img src="static/img/scrshot.png?id=' + msg.id + '" />');
+
+        $('#container-2').css('z-index', '1');
+
+        rcl2.deactivate();
+      }
+    });
+
+    $('#wave-container').on({'mousedown touchstart touchmove': function() {
+      console.log("canvas mousedown");
+      clearTimeout(query_img);
+      $('#container-2').css('z-index', '-1');
+      down = true;
+    }});
+
+    $('#wave-container').on({'mouseup touchend': function(e) {
+      down = false;
       console.log("width " + width);
       var camera_position = rcl2._core._camera.position.toArray();
       var camera_up = rcl2._core._camera.up.toArray();
+      var geometry = rcl2.getGeometryDimensions();
       var params = {"position": {"x": camera_position[0], "y": camera_position[1], "z": camera_position[2]},
                     "up": {"x": camera_up[0], "y": camera_up[1], "z": camera_up[2]},
                     "size": {"width": width, "height": height},
+                    "geometry": geometry,
                     "uid": uid};
 
       console.log("UID: " + uid);
 
-      // socket.emit('my_broadcast_event', {
-      //   data: params
-      // });
-
-      if (areEqual(camera_position, prev_cam_pos)) {
+      if (areEqual(camera_position, prev_cam_pos) && e.type == 'mouseup') {
         $('#container-2').css('z-index', '1');
       } else {
         prev_cam_pos = camera_position;
-        socket.emit('my_broadcast_event', {
-          data: params
-        });
-      }
-    });
-
-    $('#container').on({'touchstart': function() {
-      console.log("canvas mousedown");
-      $('#container-2').css('z-index', '-1');
-    }});
-
-    $('#container').on({'touchend touchcancel': function() {
-      console.log("width " + width);
-      var camera_position = rcl2._core._camera.position.toArray();
-      var camera_up = rcl2._core._camera.up.toArray();
-      var params = {"position": {"x": camera_position[0], "y": camera_position[1], "z": camera_position[2]},
-                    "up": {"x": camera_up[0], "y": camera_up[1], "z": camera_up[2]},
-                    "size": {"width": width, "height": height},
-                    "uid": uid};
-
-      console.log("UID: " + uid);
-
-      // socket.emit('my_broadcast_event', {
-      //   data: params
-      // });
-
-      if (areEqual(camera_position, prev_cam_pos)) {
-        $('#container-2').css('z-index', '1');
-      } else {
-        prev_cam_pos = camera_position;
-        socket.emit('my_broadcast_event', {
-          data: params
-        });
+        query_img = setTimeout(function(){
+          socket.emit('query_img', {
+            data: params
+          });
+        }, 500);
       }
     }});
 
-    $('#wave-container').mousedown(function() {
-      console.log("canvas mousedown");
-      $('#container-2').css('z-index', '-1');
-      // $('#container').css('z-index', '1');
-    });
-
-    $('#wave-container').bind('mousewheel', function(e){
+    $('#wave-container').on('mousewheel', function(e){
         if(e.originalEvent.wheelDelta /120 > 0) {
             console.log('scrolling up !');
             $('#container-2').css('z-index', '-1');
@@ -357,6 +348,7 @@ $( document ).ready(function() {
         max: 100,
         values: [ 0, 100 ],
         slide: function( event, ui ) {
+            $('#container-2').css('z-index', '-1');
             console.log(ui.values);
             rcl2.setGrayMinValue(ui.values[0]/100.0);
             rcl2.setGrayMaxValue(ui.values[1]/100.0);
@@ -371,6 +363,7 @@ $( document ).ready(function() {
         max: 100,
         values: [ 0, 100 ],
         slide: function( event, ui ) {
+            $('#container-2').css('z-index', '-1');
             console.log(ui.values);
             rcl2.setGeometryMinX(ui.values[0]/100.0)
             rcl2.setGeometryMaxX(ui.values[1]/100.0)
@@ -385,6 +378,7 @@ $( document ).ready(function() {
         max: 100,
         values: [ 0, 100 ],
         slide: function( event, ui ) {
+            $('#container-2').css('z-index', '-1');
             console.log(ui.values);
             rcl2.setGeometryMinY(ui.values[0]/100.0)
             rcl2.setGeometryMaxY(ui.values[1]/100.0)
@@ -399,6 +393,7 @@ $( document ).ready(function() {
         max: 100,
         values: [ 0, 100 ],
         slide: function( event, ui ) {
+            $('#container-2').css('z-index', '-1');
             console.log(ui.values);
             rcl2.setGeometryMinZ(ui.values[0]/100.0)
             rcl2.setGeometryMaxZ(ui.values[1]/100.0)

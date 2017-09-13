@@ -13,3 +13,6 @@ class Dwave(object):
 
     def set_scene_size(self, width, height):
         lib.Dwave_set_scene_size(self.obj, width, height)
+
+    def set_geometry(self, xmin, xmax, ymin, ymax, zmin, zmax):
+        lib.Dwave_set_geometry(self.obj, xmin, xmax, ymin, ymax, zmin, zmax)

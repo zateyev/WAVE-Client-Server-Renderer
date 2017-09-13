@@ -23,7 +23,7 @@
     <div id="imageBox"></div>
     <!-- <div id="imageBox" style="padding: 122.5px 0; text-align: center;"></div> -->
   </div>
-  <!-- <div class="window-item window-unitem" id="message">
+  <div class="window-item window-unitem" id="message">
     <div class="bar-header">
       <div class="bar-title noselect">Message Log</div>
 
@@ -134,9 +134,9 @@
         </div>
       </div>
     </div>
-  </div> -->
+  </div>
 
-  <!-- <div id="window-tab">
+  <div id="window-tab">
     <div id="offMessage" class="noselect bar-pil">Message Log</div>
     <div id="offSettings" class="noselect bar-pil">Settings</div>
   </div>
@@ -146,18 +146,19 @@
       <div id="toggleGUI" class="bar-button noselect">Show/Hide GUI</div>
       <div id="showTabs" class="bar-button noselect">Windows</div>
     </div>
-  </div> -->
+  </div>
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
   <!-- <script src="{{ url_for('static', filename = 'js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename = 'js/jquery-ui.min.js') }}"></script> -->
+    <script src="{{ url_for('static', filename = 'js/jquery.ui.touch-punch.min.js') }}"></script>
   <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/socket.io/1.3.6/socket.io.min.js"></script>
   <script src="{{ url_for('static', filename = 'js/scripts.js') }}"></script>
   <!-- <script src="{{ url_for('static', filename = 'js/three.min.js') }}"></script> -->
   <script src="{{ url_for('static', filename = 'js/three.js') }}"></script>
   <script src="{{ url_for('static', filename = 'js/OrbitControls.js') }}"></script>
-  
+
   <script src="{{ url_for('static', filename = 'js/TrackballControls.js') }}"></script>
   <script src="{{ url_for('static', filename = 'js/ejs.js') }}"></script>
   <script src="{{ url_for('static', filename = 'js/volumeRaycaster.js') }}"></script>
@@ -199,7 +200,8 @@
       ],
       "steps": 256,
       // "shader_name": "secondPassSoebel",
-      "shader_name": "secondPassDVR",
+      // "shader_name": "secondPassDVR",
+      "shader_name": "secondPassBlending",
       "slices_range": [0, '*'],
       "row_col": [16, 16],
       "renderer_size": [1024, 1024],
