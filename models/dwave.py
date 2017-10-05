@@ -8,6 +8,9 @@ class Dwave(object):
     def run(self):
         lib.Dwave_start(self.obj)
 
+    def stop(self):
+        lib.Dwave_stop(self.obj)
+
     def set_cam_settings(self, px, py, pz, ux, uy, uz):
         lib.Dwave_set_cam_settings(self.obj, px, py, pz, ux, uy, uz)
 
@@ -16,3 +19,9 @@ class Dwave(object):
 
     def set_geometry(self, xmin, xmax, ymin, ymax, zmin, zmax):
         lib.Dwave_set_geometry(self.obj, xmin, xmax, ymin, ymax, zmin, zmax)
+
+    def reset(self):
+        lib.Dwave_reset(self.obj)
+
+    def is_image_ready(self):
+        return lib.Dwave_is_image_ready(self.obj)

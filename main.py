@@ -9,6 +9,7 @@ from flask_socketio import SocketIO, emit, join_room, leave_room, \
 from models.dwave import Dwave
 from ctypes import c_float, c_int
 from random import randint
+import time
 
 # Set this variable to "threading", "eventlet" or "gevent" to test the
 # different async modes, or leave it set to None for the application to choose
@@ -17,7 +18,8 @@ async_mode = None
 
 f = Dwave()
 
-# dw = threading.Thread(target = f.run)
+dw = threading.Thread(target = f.run)
+# f.set_scene_size(c_int(int(round(1024))), c_int(int(round(681))))
 # dw.start()
 
 app = Flask(__name__)
@@ -42,11 +44,15 @@ def index():
     return render_template('index.html', async_mode=socketio.async_mode)
 
 
-@socketio.on('first_connection', namespace='')
-def test_message(message):
+@socketio.on('first_connection')
+def test_message(json):
+    width = json['data']['width']
+    height = json['data']['height']
+    f.set_scene_size(c_int(int(round(width))), c_int(int(round(height))))
+    dw.start()
     print("socket connection established")
     # session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('server_response', {'data': message['data']})
+    emit('server_response', {'data': json['data']})
 
 
 @socketio.on('query_img')
@@ -77,22 +83,35 @@ def test_broadcast_message(json):
     # ds.start()
     # ds.join()
 
+    f.reset()
     f.set_cam_settings(c_float(px), c_float(py), c_float(pz), c_float(ux), c_float(uy), c_float(uz))
-    f.set_scene_size(c_int(int(round(width))), c_int(int(round(height))))
+    # f.set_scene_size(c_int(int(round(width))), c_int(int(round(height))))
     f.set_geometry(c_float(xmin), c_float(xmax), c_float(ymin), c_float(ymax), c_float(zmin), c_float(zmax))
 
-    f.run()
+    # if not dw.isAlive():
+    #     dw.start()
+
+    # print(not dw.isAlive())
+
+    # print(width)
+    # print(height)
+
+    # f.run()
 
     # dw = threading.Thread(target = f.run)
     # dw.start()
     # dw.join()
 
-    uid = json['data']['uid']
+    # uid = json['data']['uid']
 
-    session['receive_count'] = session.get('receive_count', 0) + 1
-    emit('receive_img' + str(uid),
-         {'data': json['data']['position']['x'], 'id': randint(0, 100000)})
-        #  {'data': str(json), 'id': randint(0, 1000)})
+    # session['receive_count'] = session.get('receive_count', 0) + 1
+
+    while not f.is_image_ready():
+        pass
+
+    emit('receive_img',# + str(uid),
+    {'data': json['data']['position']['x'], 'id': randint(0, 100000)})
+    #  {'data': str(json), 'id': randint(0, 1000)})
 
 
 @socketio.on('disconnect_request', namespace='/test')
@@ -116,8 +135,9 @@ def test_connect():
     emit('my_response', {'data': 'Connected', 'count': 0})
 
 
-@socketio.on('disconnect', namespace='/test')
+@socketio.on('disconnect') #, namespace='/test')
 def test_disconnect():
+    dw.stop()
     print('Client disconnected', request.sid)
 
 

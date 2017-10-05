@@ -246,7 +246,7 @@ $("#textUpperZ").change(function() {
 $( document ).ready(function() {
 
     // var uid = Math.round(Math.random()*100);
-    var uid = 0;
+    // var uid = 0;
 
     namespace = '';
 
@@ -262,7 +262,8 @@ $( document ).ready(function() {
 
     socket.on('connect', function() {
       socket.emit('first_connection', {
-        data: 'Socket connection established!'
+        // data: 'Socket connection established!'
+        data: {"width": width, "height": height}
       });
     });
 
@@ -270,7 +271,7 @@ $( document ).ready(function() {
       console.log(msg.data);
     });
 
-    socket.on('receive_img' + uid, function(msg) {
+    socket.on('receive_img', function(msg) {
       if (!down) {
         // if (height > width) {
         //   var im_pad = (height - width) / 2;
@@ -286,11 +287,19 @@ $( document ).ready(function() {
         //   console.log('PPPPP ' + msg.data + ' === ' + camera_position[0]);
         // }
 
-        $("#imageBox").html('<img src="static/img/scrshot.png?id=' + msg.id + '" />');
+        // $("#imageBox").html('<img src="static/img/scrshot.png?id=' + msg.id + '" />');
+        $("#imageBox").html('<img src="static/img/scrshot.png?id=' + Math.round(Math.random()*100000) + '" />');
 
         $('#container-2').css('z-index', '1');
-
         rcl2.deactivate();
+
+        // var image = new Image();
+        // $("#imageBox").appendChild(image);
+        // $(image).on('load', function(){
+        //   $('#container-2').css('z-index', '1');
+        //   rcl2.deactivate();
+        // });
+        // image.src = "static/img/scrshot.png?id=" + Math.round(Math.random()*100000);
       }
     });
 
@@ -307,13 +316,15 @@ $( document ).ready(function() {
       var camera_position = rcl2._core._camera.position.toArray();
       var camera_up = rcl2._core._camera.up.toArray();
       var geometry = rcl2.getGeometryDimensions();
+      console.log(camera_position);
+      console.log(camera_up);
       var params = {"position": {"x": camera_position[0], "y": camera_position[1], "z": camera_position[2]},
                     "up": {"x": camera_up[0], "y": camera_up[1], "z": camera_up[2]},
                     "size": {"width": width, "height": height},
-                    "geometry": geometry,
-                    "uid": uid};
+                    "geometry": geometry};
+                    // "uid": uid};
 
-      console.log("UID: " + uid);
+      // console.log("UID: " + uid);
 
       if (areEqual(camera_position, prev_cam_pos) && e.type == 'mouseup') {
         $('#container-2').css('z-index', '1');
